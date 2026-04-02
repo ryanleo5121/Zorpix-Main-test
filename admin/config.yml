@@ -1,6 +1,8 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: https://github.com/ryanleo5121/Zorpix-Main-test
   branch: main
+  base_url: https://api.netlify.com
 
 media_folder: "images"
 public_folder: "/images"
