@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog | Zorpix Digital Agency</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #0a0a0a; color: #fff; }
+    h1 { color: #fff; }
+    .post-card { background: #1a1a1a; border-radius: 10px; padding: 20px; margin: 20px 0; }
+    .post-card h2 { color: #fff; margin: 0 0 10px; }
+    .post-card p { color: #aaa; }
+    .post-card a { color: #6c63ff; text-decoration: none; }
+    .date { color: #666; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>Zorpix Blog</h1>
+  <div id="posts"></div>
+
+  <script src="https://unpkg.com/marked/marked.min.js"></script>
+  <script>
+    const posts = [
+      // Add your posts manually here after publishing via CMS
+      // Example:
+      // { title: "Post Title", date: "2026-04-02", file: "_posts/post-slug.md" }
+    ];
+
+    const container = document.getElementById('posts');
+
+    if (posts.length === 0) {
+      container.innerHTML = '<p style="color:#aaa">No posts yet.</p>';
+    }
+
+    posts.forEach(post => {
+      fetch(post.file)
+        .then(res => res.text())
+        .then(text => {
+          const card = document.createElement('div');
+          card.className = 'post-card';
+          card.innerHTML = `
+            <h2>${post.title}</h2>
+            <p class="date">${post.date}</p>
+            <div>${marked.parse(text)}</div>
+          `;
+          container.appendChild(card);
+        });
+    });
+  </script>
+</body>
+</html>
