@@ -50,7 +50,7 @@
         card.className = 'post-card';
         card.innerHTML = `
           <h2>${title}</h2>
-          <div>${marked.parse(text)}</div>
+          <div>${window.marked.parse(text)}</div>
         `;
         container.appendChild(card);
       }
@@ -60,11 +60,11 @@
     }
   }
 
-  // Wait for marked to load first
-  window.addEventListener('load', loadPosts);
+  // Load marked dynamically first, then run
+  const markedScript = document.createElement('script');
+  markedScript.src = 'https://unpkg.com/marked/marked.min.js';
+  markedScript.onload = loadPosts;
+  document.head.appendChild(markedScript);
 </script>
-
-<!-- marked MUST be before closing body tag -->
-<script src="https://unpkg.com/marked/marked.min.js"></script>
 </body>
 </html>
