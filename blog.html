@@ -19,33 +19,50 @@
   <div id="posts"></div>
 
   <script src="https://unpkg.com/marked/marked.min.js"></script>
-  <script>
-    const posts = [
-      // Add your posts manually here after publishing via CMS
-      // Example:
-      // { title: "Post Title", date: "2026-04-02", file: "_posts/post-slug.md" }
-    ];
+<script>
+  const GITHUB_USER = 'ryanleo5121';
+  const GITHUB_REPO = 'Zorpix-Main-test';
+  const POSTS_FOLDER = '_posts';
 
-    const container = document.getElementById('posts');
+  const container = document.getElementById('posts');
 
-    if (posts.length === 0) {
-      container.innerHTML = '<p style="color:#aaa">No posts yet.</p>';
+  async function loadPosts() {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${POSTS_FOLDER}`);
+      const files = await res.json();
+
+      if (!Array.isArray(files) || files.length === 0) {
+        container.innerHTML = '<p style="color:#aaa">No posts yet.</p>';
+        return;
+      }
+
+      // Sort by newest first
+      files.reverse();
+
+      for (const file of files) {
+        const postRes = await fetch(file.download_url);
+        const text = await postRes.text();
+
+        // Extract title and date from filename (e.g. 2026-04-02-my-post.md)
+        const nameParts = file.name.replace('.md', '').split('-');
+        const date = `${nameParts[0]}-${nameParts[1]}-${nameParts[2]}`;
+        const title = nameParts.slice(3).join(' ');
+
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.innerHTML = `
+          <h2>${title || file.name}</h2>
+          <p class="date">${date}</p>
+          <div>${marked.parse(text)}</div>
+        `;
+        container.appendChild(card);
+      }
+    } catch (err) {
+      container.innerHTML = '<p style="color:#aaa">Failed to load posts.</p>';
     }
+  }
 
-    posts.forEach(post => {
-      fetch(post.file)
-        .then(res => res.text())
-        .then(text => {
-          const card = document.createElement('div');
-          card.className = 'post-card';
-          card.innerHTML = `
-            <h2>${post.title}</h2>
-            <p class="date">${post.date}</p>
-            <div>${marked.parse(text)}</div>
-          `;
-          container.appendChild(card);
-        });
-    });
-  </script>
+  loadPosts();
+</script>
 </body>
 </html>
