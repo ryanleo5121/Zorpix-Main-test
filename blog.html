@@ -18,8 +18,7 @@
   <h1>Zorpix Blog</h1>
   <div id="posts"></div>
 
-  <script src="https://unpkg.com/marked/marked.min.js"></script>
-<script>
+  <script>
   const GITHUB_USER = 'ryanleo5121';
   const GITHUB_REPO = 'Zorpix-Main-test';
   const POSTS_FOLDER = '_posts';
@@ -42,7 +41,6 @@
         const postRes = await fetch(file.download_url);
         const text = await postRes.text();
 
-        // Clean title from filename
         const title = file.name
           .replace('.md', '')
           .replace(/-/g, ' ')
@@ -62,7 +60,11 @@
     }
   }
 
-  loadPosts();
+  // Wait for marked to load first
+  window.addEventListener('load', loadPosts);
 </script>
+
+<!-- marked MUST be before closing body tag -->
+<script src="https://unpkg.com/marked/marked.min.js"></script>
 </body>
 </html>
