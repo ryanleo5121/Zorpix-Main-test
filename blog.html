@@ -36,29 +36,29 @@
         return;
       }
 
-      // Sort by newest first
       files.reverse();
 
       for (const file of files) {
         const postRes = await fetch(file.download_url);
         const text = await postRes.text();
 
-        // Extract title and date from filename (e.g. 2026-04-02-my-post.md)
-        const nameParts = file.name.replace('.md', '').split('-');
-        const date = `${nameParts[0]}-${nameParts[1]}-${nameParts[2]}`;
-        const title = nameParts.slice(3).join(' ');
+        // Clean title from filename
+        const title = file.name
+          .replace('.md', '')
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase());
 
         const card = document.createElement('div');
         card.className = 'post-card';
         card.innerHTML = `
-          <h2>${title || file.name}</h2>
-          <p class="date">${date}</p>
+          <h2>${title}</h2>
           <div>${marked.parse(text)}</div>
         `;
         container.appendChild(card);
       }
     } catch (err) {
       container.innerHTML = '<p style="color:#aaa">Failed to load posts.</p>';
+      console.error(err);
     }
   }
 
