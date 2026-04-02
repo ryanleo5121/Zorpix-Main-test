@@ -18,7 +18,8 @@
   <h1>Zorpix Blog</h1>
   <div id="posts"></div>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
   const GITHUB_USER = 'ryanleo5121';
   const GITHUB_REPO = 'Zorpix-Main-test';
   const POSTS_FOLDER = '_posts';
@@ -50,7 +51,7 @@
         card.className = 'post-card';
         card.innerHTML = `
           <h2>${title}</h2>
-          <div>${window.marked.parse(text)}</div>
+          <div>${marked.parse(text)}</div>
         `;
         container.appendChild(card);
       }
@@ -60,11 +61,7 @@
     }
   }
 
-  // Load marked dynamically first, then run
-  const markedScript = document.createElement('script');
-  markedScript.src = 'https://unpkg.com/marked/marked.min.js';
-  markedScript.onload = loadPosts;
-  document.head.appendChild(markedScript);
+  document.addEventListener('DOMContentLoaded', loadPosts);
 </script>
 </body>
 </html>
